@@ -46,7 +46,7 @@ class Tool:
     @staticmethod
     @cw_fz
     def in_tr():
-        return (f for f in os.listdir() if f.endswith(".txt") and f != "系统日志.txt")
+        return [f for f in os.listdir() if f.endswith(".txt") and f != "系统日志.txt"]
     #判断是否存在文件，不存在则创建
     @staticmethod
     @cw_fz
@@ -57,7 +57,6 @@ class Tool:
                     f.write("")
     #异步处理系统日志
     @staticmethod
-    @cw_fz
     def xi_ton(xin_xi:str):
         t = threading.Thread(target=Tool.yi_bu_ji_lu, args=(xin_xi,))
         t.daemon = True
@@ -82,7 +81,7 @@ class Tool:
     @cw_fz
     def save_file(a,xx):
             line = (f"{a['时间']}\t\t{a['年龄']}\t{a['体重']}\t{a['身高']}\t{a['腰围']}\t{a['颈围']}\t{a['BMI']}"
-                    f"\t{a['BMR']}\t\t{a['体脂率']}\t{a['腰体脂率']}\t{a['基础代谢']}\n")
+                    f"\t{a['BMR']}\t\t{a['体脂率']}\t{a['腰体脂率']}\t\t{a['基础代谢']}\n")
             with open(xx, 'a', encoding="utf-8") as f:
                 f.write(line)
 #功能类
@@ -120,7 +119,7 @@ class GonNen:
                 print(b)
         with open(xx, 'r', encoding="utf-8") as f:
             for line in f:
-                lines = re.findall(r'(\d+\.\d+)', line)
+                lines = re.findall(r'(\d+\.\d*)', line)
                 shu_zi += 1
                 ping_ju1 += float(lines[7])
                 ping_ju2 += float(lines[8])
@@ -133,7 +132,7 @@ class GonNen:
     #清空历史数据
     @lu_ru
     def clear_date(self,xx):
-        pan_duan = int(input())
+        pan_duan = int(input("请输入操作数字"))
         if pan_duan == 1:
             with open(xx, 'w', encoding="utf-8") as f:
                 f.write('')
@@ -154,25 +153,29 @@ class GonNen:
     #按日期查看数据
     @date
     @cw_fz
-    @lu_ru
     def re_qi_bian_li(self,xx):
-            start_date = input("请输入开始日期(格式YYYY-MM-DD)：")
-            end_date = input("请输入结束日期(格式YYYY-MM-DD)：")
-            s = datetime.datetime.strptime(start_date, "%Y-%m-%d")
-            e = datetime.datetime.strptime(end_date, "%Y-%m-%d")
-            with open(xx, 'r', encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    time_str = line.split("\t")[0]
-                    record_date = datetime.datetime.strptime(time_str[:10], "%Y-%m-%d")
-                    if s <= record_date <= e:
-                        print(line)
-                print("自动返回主页面")
-                Tool.xi_ton(f"你查找了{s}到{e}的历史数据")
-                time.sleep(1)
-                return
+        while True:
+            try:
+                start_date = input("请输入开始日期(格式YYYY-MM-DD)：")
+                end_date = input("请输入结束日期(格式YYYY-MM-DD)：")
+                s = datetime.datetime.strptime(start_date, "%Y-%m-%d")
+                e = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+                break
+            except ValueError:
+                print("请输入正确格式")
+        with open(xx, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                time_str = line.split("\t")[0]
+                record_date = datetime.datetime.strptime(time_str[:10], "%Y-%m-%d")
+                if s <= record_date <= e:
+                    print(line)
+            print("自动返回主页面")
+            Tool.xi_ton(f"你查找了{s}到{e}的历史数据")
+            time.sleep(1)
+            return
     #自动遍历数据
     @date
     @cw_fz
@@ -194,10 +197,14 @@ class GonNen:
     @cw_fz
     def shou_d_bian_li(self,xx):
             with open(xx, 'r', encoding="utf-8") as f:
-                print("按回车键为下一条")
+                print("按回车键为下一条,输入数字'1'退出手动查找")
                 for line in f:
                     print(line)
                     ss = input()
+                    if ss=="1":
+                        print("成功结束查找")
+                        Tool.xi_ton("你结束了查找")
+                        return
                 print("已查看完所有数据")
             Tool.xi_ton("你手动遍历了历史数据")
     #删除档案
@@ -230,7 +237,8 @@ class GonNen:
         print("2.女")
         six_1=int(input())
         if six_1<0 or six_1>2:
-            pass
+            print("请输入正确性别序号")
+            return None
         else:
             return six_1
     @staticmethod
@@ -240,7 +248,7 @@ class GonNen:
         if c:
             return b
         else:
-            j = a + ".gril.txt"
+            j = a + ".girl.txt"
             d = j in Tool.in_tr()
             if d:
                 return j
@@ -293,7 +301,7 @@ class YeMian:
         print("4.查看某天的数据")
 #业务类
 class SenNiShuGuJiangCe(Tool,YeMian,GonNen) :
-    def __init__(self,targe,six):
+    def __init__(self,targe,six_1):
         """初始数据"""
         self.ti_zh=0
         self.nian_lin=0
@@ -301,7 +309,7 @@ class SenNiShuGuJiangCe(Tool,YeMian,GonNen) :
         self.yao_wei=0
         self.jin_wei=0
         self.date_file=targe
-        self.six=six
+        self.six=six_1
         Tool._init_file(self.date_file)
     #数据录入
     @lu_ru
@@ -309,7 +317,7 @@ class SenNiShuGuJiangCe(Tool,YeMian,GonNen) :
         """输入数据"""
         while True:
             nian_lin = float(input(f'请输入{shu_jiang}：单位{dan_wei}'))
-            if xian_xian < nian_lin <= san_xian:
+            if xian_xian <= nian_lin <= san_xian:
                 print('成功输入')
                 Tool.xi_ton(f"你成功输入了{shu_jiang}的值{nian_lin}{dan_wei}")
                 break
@@ -367,15 +375,15 @@ class SenNiShuGuJiangCe(Tool,YeMian,GonNen) :
             bmr = round(10 * self.ti_zh + 6.25 * self.sen_gao - 5 * self.nian_lin + 5, 1)
             ti_zi = round(1.2 * bmi + 0.23 * self.nian_lin - 16.2, 2)
             dai_xie = round(bmr * 1.55, 2)
-            if self.jin_wei !=self.yao_wei:
+            if self.jin_wei != self.yao_wei:
                 ti_zi2=round(495/(1.0324-0.19071*math.log10(abs(self.jin_wei - self.yao_wei))+0.15456*math.log10(self.sen_gao)) - 450)
             else:
                 ti_zi2=ti_zi
         else:
-            bmr = round(10 * self.ti_zh + 6.25 * self.sen_gao - 5 * self.nian_lin + 5, 1)
+            bmr = round(10 * self.ti_zh + 6.25 * self.sen_gao - 5 * self.nian_lin -161, 1)
             ti_zi = round(1.2 * bmi + 0.23 * self.nian_lin - 5.4, 2)
             dai_xie = round(bmr * 1.55, 2)
-            if self.jin_wei !=self.yao_wei:
+            if self.jin_wei != self.yao_wei:
                 ti_zi2=round(495/(1.0324-0.19071*math.log10(abs(self.yao_wei-self.jin_wei))+0.15456*math.log10(self.sen_gao)) - 450)
             else:
                 ti_zi2=ti_zi
@@ -449,7 +457,6 @@ class SenNiShuGuJiangCe(Tool,YeMian,GonNen) :
             elif chao_zuo==3:
                 print("操作会清空历史数据，且无法恢复,是否确定要如此操作,1.是，2,否")
                 self.clear_date(self.date_file)
-                Tool.xi_ton("你清空了历史数据")
             elif chao_zuo==4:
                 Tool.xi_ton(f"你想要删除{self.date_file}文件")
                 self.san_chu(self.date_file)
@@ -479,7 +486,7 @@ if __name__ == '__main__':
                     six=1
                     zlj = SenNiShuGuJiangCe(exists,six)
                     zlj.main()
-                elif exists.endswith(".gril.txt"):
+                elif exists.endswith(".girl.txt"):
                     six=2
                     zlj = SenNiShuGuJiangCe(exists,six)
                     zlj.main()
@@ -500,13 +507,17 @@ if __name__ == '__main__':
                     date_file=date_file[:-4]
                     if six==1:
                        target=date_file+".man.txt"
-                    else:
+                    elif six==2:
                         target=date_file+".girl.txt"
+                    else:
+                        continue
                 else:
                     if six==1:
                         target = date_file + ".man.txt"
-                    else:
+                    elif six==2:
                         target = date_file + ".girl.txt"
+                    else:
+                        continue
                 exists = target in Tool.in_tr()
                 if not exists:
                     zlj = SenNiShuGuJiangCe(target,six)
