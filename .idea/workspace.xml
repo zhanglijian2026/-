@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9e5eb3da-d29c-43af-9084-a99f3f30da88" name="更改" comment="健康系统">
-      <change afterPath="$PROJECT_DIR$/健康系统/学生信息管理系统.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/健康系统/主程序.py" beforeDir="false" afterPath="$PROJECT_DIR$/健康系统/主程序.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/健康系统/学生信息管理系统.py" beforeDir="false" afterPath="$PROJECT_DIR$/健康系统/学生信息管理系统.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/学生信息管理系统.py" beforeDir="false" afterPath="$PROJECT_DIR$/学生信息管理系统.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +53,7 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python.主程序.executor": "Run",
+    "Python.记录学生数据系统.executor": "Run",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -98,7 +100,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781349265822</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="健康系统">
+      <option name="closed" value="true" />
+      <created>1781360397585</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1781360397585</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
