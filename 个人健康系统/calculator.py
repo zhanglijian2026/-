@@ -6,17 +6,17 @@ import math
 from nemu import YeMian
 from Tool import Tool
 class Calculator:
-    body_date ={'时间': "",
-                 '年龄': "",
-                 '体重': "",
-                 '身高': "",
-                 '腰围': "",
-                 '颈围': "",
-                 'BMI': "",
-                 'BMR': "",
-                 '体脂率': "",
-                 '腰体脂率': "",
-                 '基础代谢': ""}
+    body_date ={'time': "",
+                 'age': "",
+                 'wt': "",
+                 'ht': "",
+                 'waist': "",
+                 'neck': "",
+                 'bmi': "",
+                 'bmr': "",
+                 'bft': "",
+                 'bft_1': "",
+                 'meta': ""}
     bmi_eval= ""
     bft_eval= ""
     waist_eval= ""
@@ -43,7 +43,7 @@ class Calculator:
         self.input_basic_data("颈围", "cm", config.neck_min, config.neck_max)
         #计算
         self.date_computing()
-        #保存
+        #保存并上传数据库
         self.__class__.save_temp(self)
         #评价
         self.date_comment()
@@ -61,7 +61,7 @@ class Calculator:
             body_date= float(input(f'请输入{body_vals}：单位:{units},'))
             if body_date_min <= body_date <= body_date_max:
                 print('成功输入')
-                Tool.xi_ton(f"你成功输入了{body_vals}的值{body_date}{units}")
+                Tool.write_sys_opt_log(f"你成功输入了{body_vals}的值{body_date}{units}")
                 break
             print(f'请输入正确{body_vals}（范围：{body_date_min}~{body_date_max}）')
         if body_vals=="年龄":
@@ -76,7 +76,6 @@ class Calculator:
             self.neck=body_date
         return
     #数据计算
-    @utils.cw_fz
     def date_computing(self):
         """计算"""
         print("系统正在计算，请稍后")
@@ -107,28 +106,29 @@ class Calculator:
     #赋值类属性
     @classmethod
     def save_temp(cls,date):
-        cls.body_date = {'时间': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                     '年龄': date.age,
-                     '体重': date.wt,
-                     '身高': date.ht,
-                     '腰围': date.waist,
-                     '颈围': date.neck,
-                     'BMI': date.bmi,
-                     'BMR': date.bmr,
-                     '体脂率': date.bft,
-                     '腰体脂率': date.bft_1,
-                     '基础代谢':date.meta}
+        cls.body_date = {'time': datetime.datetime.now().strftime('%Y-%m-%d'),
+                     'age': date.age,
+                     'wt': date.wt,
+                     'ht': date.ht,
+                     'waist': date.waist,
+                     'neck': date.neck,
+                     'bmi': date.bmi,
+                     'bmr': date.bmr,
+                     'bft': date.bft,
+                     'bft_1': date.bft_1,
+                     'meta':date.meta}
+        config.zlj.add_data(cls.body_date)
     #评价
     def date_comment(self):
-        if self.body_date['BMI'] < 18.5:
+        if self.body_date['bmi'] < 18.5:
             bmi_eval = "偏瘦"
-        elif self.body_date['BMI'] < 24:
+        elif self.body_date['bmi'] < 24:
             bmi_eval = "正常"
-        elif self.body_date['BMI'] < 28:
+        elif self.body_date['bmi'] < 28:
             bmi_eval = "偏胖"
         else:
             bmi_eval= "肥胖"
-        comp_bft = (self.body_date["体脂率"] + self.body_date["腰体脂率"]) / 2
+        comp_bft = (self.body_date["bft"] + self.body_date["bft_1"]) / 2
         if self.six == "男":
             if comp_bft <= 10:
                 bft_eval= "极低偏瘦"
@@ -140,9 +140,9 @@ class Calculator:
                 bft_eval= "偏高，腹部有赘肉"
             else:
                 bft_eval= "肥胖，脸胖肉松"
-            if self.body_date["腰围"] < 75:
+            if self.body_date["waist"] < 75:
                 waist_eval = "标准苗条"
-            elif self.body_date["腰围"] < 85:
+            elif self.body_date["waist"] < 85:
                 waist_eval = "正常"
             else:
                 waist_eval = "腹型肥胖，内脏脂肪高"
@@ -159,9 +159,9 @@ class Calculator:
                 bft_eval= "偏高，腹部有赘肉"
             else:
                 bft_eval= "肥胖，脸胖肉松"
-            if self.body_date["腰围"] < 80:
+            if self.body_date["waist"] < 80:
                 waist_eval = "标准苗条"
-            elif self.body_date["腰围"] < 85:
+            elif self.body_date["waist"] < 85:
                 waist_eval = "正常"
             else:
                 waist_eval = "腹型肥胖，内脏脂肪高"
@@ -181,17 +181,17 @@ class Calculator:
         time.sleep(0.3)
     @classmethod
     def clear_cache(cls):
-        cls.body_date = {'时间': "",
-                     '年龄': "",
-                     '体重': "",
-                     '身高': "",
-                     '腰围': "",
-                     '颈围': "",
-                     'BMI': "",
-                     'BMR': "",
-                     '体脂率': "",
-                     '腰体脂率': "",
-                     '基础代谢': ""}
+        cls.body_date = {'time': "",
+                     'age': "",
+                     'wt': "",
+                     'ht': "",
+                     'waist': "",
+                     'nect': "",
+                     'bmi': "",
+                     'bmr': "",
+                     'bft': "",
+                     'bft_1': "",
+                     'meta': ""}
         cls.bmi_eval= ""
         cls.bft_eval= ""
         cls.waist_eval= ""
